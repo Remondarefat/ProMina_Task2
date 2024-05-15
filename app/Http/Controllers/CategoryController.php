@@ -10,9 +10,34 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::with('media')->get(); 
-        return view('categories.index', compact('categories'));
+        // $categories = Category::with('media')->get(); 
+        return view('categories.index');
     }
+    public function getCategories()
+{
+    $categories = Category::all();
+    $data = [];
+    
+    foreach ($categories as $category) {
+        $rowData = [
+            'id' => $category->id,
+            'name' => $category->name,
+            'description' => $category->description,
+            'icon' => '<img src="' . $category->getFirstMediaUrl('icon') . '" alt="' . $category->name . '" width="50">',
+            'image' =>'<img src="' . $category->getFirstMediaUrl('img') . '" alt="' . $category->name . '" width="50">',
+            'actions' => '<a href="' . route('categories.edit', $category->id) . '" class="btn btn-primary m-3">Edit</a>' .
+                            '<form action="' . route('categories.destroy', $category->id) . '" method="POST" style="display: inline;">' .
+                                csrf_field() .
+                                method_field('DELETE') .
+                                '<button type="submit" class="btn btn-danger">Delete</button>' .
+                            '</form>',
+        ];
+        $data[] = $rowData;
+    }
+
+    return response()->json(['data' => $data]);
+}
+
 
     public function create()
     {

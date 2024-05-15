@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\ServerController;
 use App\Http\Controllers\CategoryController;
 
 /*
@@ -27,7 +28,7 @@ Route::get('/', function () {
 });
 
 Route::get('/', function () {
-    return view('user.login');
+    return view('admin.login');
 });
 Route::middleware([
     'auth:sanctum',
@@ -78,8 +79,8 @@ Route::middleware('auth:admin')->prefix('posts')->group(function () {
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-
 });
+Route::get('/get-posts', [PostController::class, 'getPost']);
 
 
 // Categories Routes 
@@ -90,7 +91,9 @@ Route::middleware('auth:admin')->prefix('categories')->group(function () {
     Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    
 });
+Route::get('/get-categories', [CategoryController::class, 'getCategories']);
 
 
 
@@ -102,7 +105,7 @@ Route::group(['prefix' => 'table'], function () {
 });
 /* Route Tables */
 
-
+// Route::get('/get-posts', [ServerController::class, 'getData'])->name('posts.getData');
 
 
 

@@ -46,9 +46,35 @@ class PostController extends Controller
     }
     public function index()
     {
-        $posts = Post::latest()->with('media')->get();
-        return view('posts.index',compact('posts'));
+        // $posts = Post::latest()->with('media')->get();
+        return view('posts.index');
     }
+     // !------DataTables server side 
+     public function getPost()
+{
+    $posts = Post::all(); 
+    $data = [];
+    
+    foreach ($posts as $post) {
+        $rowData = [
+            'id' => $post->id,
+            'title' => $post->title,
+            'content' => $post->content,
+            'pdf_first' => $post->pdf_first,
+            'pinned' => $post->pinned,
+            'actions' => '<a href="' . route('posts.edit', $post->id) . '" class="btn btn-primary m-3">Edit</a>' .
+                            `<form action="' . route('posts.destroy', $post->id) . '" method="POST" style="display: inline;">` .
+                                `@csrf` .
+                                `@method("DELETE")` .
+                                '<button type="submit" class="btn btn-danger">Delete</button>' .
+                            '</form>',
+            'feature' => '<img src="' . $post->getFirstMediaUrl('feature') . '" alt="' . $post->name . '" width="50">',
+        ];
+        $data[] = $rowData;
+    }
+
+    return response()->json(['data' => $data]);
+}
 
     public function show(Post $post)
     {

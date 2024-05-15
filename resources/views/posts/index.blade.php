@@ -1,7 +1,9 @@
+@extends('layouts.data_table')
 @extends('layouts.admin')
+
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'DataTables')
+@section('title', 'DataTables')    
 
 @section('vendor-style')
   {{-- vendor css files --}}
@@ -28,29 +30,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($posts as $post)
-            <tr>
-                <td>{{ $post->id }}</td>
-                <td>{{ $post->title }}</td>
-                <td>{{ $post->content }}</td>
-                <td>
-                    @if ($post->getFirstMedia('feature'))
-                    <img src="{{ $post->getFirstMedia('feature')->getUrl() }}" alt="{{ $post->name }}" width="50">
-                    @endif
-                </td>
-                <td>{{ $post->pdf_first }}</td>
-                <td>{{ $post->pinned }}</td>
-
-                <td>
-                    <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">Edit</a>
-                    <form action="{{ route('posts.destroy', $post->id) }}" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
+       
         </tbody>
     </table>
 </div>
@@ -82,8 +62,28 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 @endsection
 @section('javaScript')
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script>
-          $('table').DataTable();
-    </script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+@section('javaScript')
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+   $(document).ready(function() {
+    $('#table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '/get-posts' ,
+                columns: [
+            { data: 'id' },
+            { data: 'title' },
+            { data: 'content' },
+            { data: 'feature' },
+            { data: 'pdf_first' },
+            { data: 'pinned' },
+            { data: 'actions' }
+        ]
+    });
+});
+</script>
+@endsection
+
+
 @endsection

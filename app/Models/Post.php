@@ -12,6 +12,7 @@ class Post extends Model implements HasMedia
 
     protected $fillable = ['title', 'content', 'tags', 'pinned', 'pdf_first'];
 
-
+    
 }
+
 
